@@ -10,7 +10,7 @@ export default class Component {
     return '';
   }
   setState(nextState) {
-    this.state = { ...this.state, nextState };
+    this.state = nextState;
     this.render();
   }
   render() {
