@@ -14,7 +14,7 @@ export default class Component {
     this.render();
   }
   render() {
-    this.$target.innerHTML = this.$target.innerHTML + this.template();
+    this.$target.innerHTML = this.template();
     this.mounted();
   }
   mounted() {}
