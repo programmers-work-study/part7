@@ -6,6 +6,12 @@ export default class CartList extends Component {
     this.$target.addEventListener('click', (event) => {
       const $target = event.target;
       const $item = $target.closest('li');
+      const $payBtn = this.$target.querySelector('#payment-btn');
+      if ($target === $payBtn) {
+        setStorageItem('cartList', this.state);
+        return;
+      }
+
       if ($item) {
         const targetId = $item.id;
         const itemList = this.state.list;
@@ -47,11 +53,7 @@ export default class CartList extends Component {
       }
     });
   }
-  setState(nextValue) {
-    this.state = nextValue;
-    setStorageItem('cartList', this.state);
-    this.render();
-  }
+
   template() {
     return ` <section
           class="pointer-events-auto w-screen max-w-md transition ease-in-out duration-500 translate-x-full"
