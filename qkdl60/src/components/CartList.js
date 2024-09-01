@@ -7,49 +7,26 @@ export default class CartList extends Component {
       const $target = event.target;
       const $item = $target.closest('li');
       const $payBtn = this.$target.querySelector('#payment-btn');
+      const $closeBtn = this.$target.querySelector('#close-cart-btn');
+
       if ($target === $payBtn) {
         setStorageItem('cartList', this.state);
         return;
       }
-
+      if ($target === $closeBtn) {
+        this.closeCart();
+        return;
+      }
       if ($item) {
         const targetId = $item.id;
         const itemList = this.state.list;
-        let nextListValue = this.state.list;
         if ($target.className === 'increase-btn') {
-          nextListValue = itemList.map((i) => {
-            if (i.id == targetId) {
-              return { ...i, count: i.count + 1 };
-            } else return i;
-          });
+          this.increaseCartItem(targetId, itemList);
         } else if ($target.className === 'decrease-btn') {
-          nextListValue = itemList.map((i) => {
-            if (i.id == targetId) {
-              return { ...i, count: i.count - 1 };
-            } else return i;
-          });
+          this.decreaseCartItem(targetId, itemList);
         } else if ($target.className === 'remove-btn') {
-          nextListValue = itemList.filter((i) => i.id != targetId);
+          this.removeCartItem(targetId, itemList);
         }
-
-        if (!nextListValue) return;
-
-        if (nextListValue.some((i) => i.count > 10)) {
-          showAlert('장바구니에 담을 수 있는 최대 수량은 10개입니다.');
-          return;
-        }
-        if (nextListValue.some((i) => i.count < 1)) {
-          showAlert('장바구니에 담을 수 있는 최소 수량은 1개입니다.');
-          return;
-        }
-        this.setState({
-          total: nextListValue.reduce(
-            (acc, item) => acc + item.count * item.price,
-            0
-          ),
-          list: nextListValue,
-        });
-        this.openCart();
       }
     });
   }
@@ -161,5 +138,59 @@ export default class CartList extends Component {
     $backDrop.setAttribute('hidden', true);
     const $shoppingCart = document.querySelector('#shopping-cart');
     $shoppingCart.classList.replace('translate-x-0', 'translate-x-full');
+  }
+  increaseCartItem(id, itemList) {
+    const nextListValue = itemList.map((i) => {
+      if (i.id == id) {
+        return { ...i, count: i.count + 1 };
+      } else return i;
+    });
+    if (nextListValue.some((i) => i.count > 10)) {
+      showAlert('장바구니에 담을 수 있는 최대 수량은 10개입니다.');
+      return;
+    }
+    this.setState({
+      list: nextListValue,
+      total: this.calcTotal(nextListValue),
+    });
+  }
+  decreaseCartItem(id, itemList) {
+    const nextListValue = itemList.map((i) => {
+      if (i.id == id) {
+        return { ...i, count: i.count - 1 };
+      } else return i;
+    });
+    if (nextListValue.some((i) => i.count < 1)) {
+      showAlert('장바구니에 담을 수 있는 최소 수량은 1개입니다.');
+      return;
+    }
+    this.setState({
+      list: nextListValue,
+      total: this.calcTotal(nextListValue),
+    });
+  }
+  removeCartItem(id, itemList) {
+    const nextListValue = itemList.filter((i) => i.id != id);
+    this.setState({
+      list: nextListValue,
+      total: this.calcTotal(nextListValue),
+    });
+  }
+  addCartItem(id, targetItemInfo) {
+    const targetItem = this.state.list.find((item) => item.id == id);
+    if (targetItem) {
+      this.increaseCartItem(id, this.state.list);
+      this.openCart();
+      return;
+    }
+    const nextListValue = [...this.state.list, { ...targetItemInfo, count: 1 }];
+    this.setState({
+      list: nextListValue,
+      total: this.calcTotal(nextListValue),
+    });
+    this.openCart();
+  }
+  calcTotal(list) {
+    return list.reduce((acc, item) => acc + item.count * item.price, 0);
   }
 }
