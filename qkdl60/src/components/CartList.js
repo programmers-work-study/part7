@@ -1,5 +1,6 @@
 import Component from './core/Component.js';
 import { showAlert } from '../utils/utils.js';
+import { setStorageItem } from '../utils/utils.js';
 export default class CartList extends Component {
   setup() {
     this.$target.addEventListener('click', (event) => {
@@ -45,6 +46,11 @@ export default class CartList extends Component {
         openCart();
       }
     });
+  }
+  setState(nextValue) {
+    this.state = nextValue;
+    setStorageItem('cartList', this.state);
+    this.render();
   }
   template() {
     return ` <section

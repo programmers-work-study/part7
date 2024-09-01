@@ -1,11 +1,11 @@
 // 이 곳에 정답 코드를 작성해주세요.
 import CartList from './components/CartList.js';
 import ProductList from './components/ProductList.js';
-import { showAlert } from './utils/utils.js';
+import { getStorageItem, showAlert } from './utils/utils.js';
 const productData = await fetch('./api/productData.json').then((res) =>
   res.json()
 );
-let cartListData = { list: [], total: 0 };
+let cartListData = getStorageItem('cartList') || { list: [], total: 0 };
 const $productList = document.querySelector('#product-list');
 new ProductList($productList, productData);
 
