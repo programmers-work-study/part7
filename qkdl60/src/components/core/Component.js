@@ -5,6 +5,7 @@ export default class Component {
     this.$target = $target;
     this.state = state;
     this.render();
+    this.setup();
   }
   template() {
     return '';
@@ -18,4 +19,5 @@ export default class Component {
     this.mounted();
   }
   mounted() {}
+  setup() {}
 }

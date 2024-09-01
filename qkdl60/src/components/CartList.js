@@ -1,6 +1,51 @@
 import Component from './core/Component.js';
-
+import { showAlert } from '../utils/utils.js';
 export default class CartList extends Component {
+  setup() {
+    this.$target.addEventListener('click', (event) => {
+      const $target = event.target;
+      const $item = $target.closest('li');
+      if ($item) {
+        const targetId = $item.id;
+        const itemList = this.state.list;
+        let nextListValue = this.state.list;
+        if ($target.className === 'increase-btn') {
+          nextListValue = itemList.map((i) => {
+            if (i.id == targetId) {
+              return { ...i, count: i.count + 1 };
+            } else return i;
+          });
+        } else if ($target.className === 'decrease-btn') {
+          nextListValue = itemList.map((i) => {
+            if (i.id == targetId) {
+              return { ...i, count: i.count - 1 };
+            } else return i;
+          });
+        } else if ($target.className === 'remove-btn') {
+          nextListValue = itemList.filter((i) => i.id != targetId);
+        }
+
+        if (!nextListValue) return;
+        console.log(nextListValue);
+        if (nextListValue.some((i) => i.count > 10)) {
+          showAlert('장바구니에 담을 수 있는 최대 수량은 10개입니다.');
+          return;
+        }
+        if (nextListValue.some((i) => i.count < 1)) {
+          showAlert('장바구니에 담을 수 있는 최소 수량은 1개입니다.');
+          return;
+        }
+        this.setState({
+          total: nextListValue.reduce(
+            (acc, item) => acc + item.count * item.price,
+            0
+          ),
+          list: nextListValue,
+        });
+        openCart();
+      }
+    });
+  }
   template() {
     return ` <section
           class="pointer-events-auto w-screen max-w-md transition ease-in-out duration-500 translate-x-full"
@@ -32,8 +77,9 @@ export default class CartList extends Component {
               <!-- 아래 하드코딩 되어있는 장바구니 목록들을 유저 상호작용에 맞게 렌더링 되도록 변경해주세요. -->
               <div id="cart-list">
               <ul class="divide-y divide-gray-200">
-              ${this.state.list.map(
-                (item) => ` <li class="flex py-6" id=${item.id}>
+              ${this.state.list
+                .map(
+                  (item) => ` <li class="flex py-6" id=${item.id}>
                     <div
                       class="h-24 w-24 overflow-hidden rounded-md border border-gray-200"
                     >
@@ -66,7 +112,8 @@ export default class CartList extends Component {
                       </div>
                     </div>
                   </li>`
-              )}
+                )
+                .join('')}
               </ul>
               </div>
             </div>
@@ -98,7 +145,11 @@ export default class CartList extends Component {
           </div>
         </section>`;
   }
-  addEvent() {
-    this.$target.addEvent('click', () => {});
-  }
+}
+
+function openCart() {
+  const $backDrop = document.querySelector('#backdrop');
+  $backDrop.removeAttribute('hidden');
+  const $shoppingCart = document.querySelector('#shopping-cart');
+  $shoppingCart.classList.replace('translate-x-full', 'translate-x-0');
 }
