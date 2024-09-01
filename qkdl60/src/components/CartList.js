@@ -33,7 +33,7 @@ export default class CartList extends Component {
         }
 
         if (!nextListValue) return;
-        console.log(nextListValue);
+
         if (nextListValue.some((i) => i.count > 10)) {
           showAlert('장바구니에 담을 수 있는 최대 수량은 10개입니다.');
           return;
@@ -49,16 +49,13 @@ export default class CartList extends Component {
           ),
           list: nextListValue,
         });
-        openCart();
+        this.openCart();
       }
     });
   }
 
   template() {
-    return ` <section
-          class="pointer-events-auto w-screen max-w-md transition ease-in-out duration-500 translate-x-full"
-          id="shopping-cart"
-        >
+    return ` 
           <div
             class="flex h-full flex-col overflow-y-scroll bg-white shadow-xl"
           >
@@ -151,13 +148,18 @@ export default class CartList extends Component {
               </div>
             </div>
           </div>
-        </section>`;
+       `;
   }
-}
-
-function openCart() {
-  const $backDrop = document.querySelector('#backdrop');
-  $backDrop.removeAttribute('hidden');
-  const $shoppingCart = document.querySelector('#shopping-cart');
-  $shoppingCart.classList.replace('translate-x-full', 'translate-x-0');
+  openCart() {
+    const $backDrop = document.querySelector('#backdrop');
+    $backDrop.removeAttribute('hidden');
+    const $shoppingCart = document.querySelector('#shopping-cart');
+    $shoppingCart.classList.replace('translate-x-full', 'translate-x-0');
+  }
+  closeCart() {
+    const $backDrop = document.querySelector('#backdrop');
+    $backDrop.setAttribute('hidden', true);
+    const $shoppingCart = document.querySelector('#shopping-cart');
+    $shoppingCart.classList.replace('translate-x-0', 'translate-x-full');
+  }
 }

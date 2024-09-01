@@ -9,7 +9,7 @@ let cartListData = getStorageItem('cartList') || { list: [], total: 0 };
 const $productList = document.querySelector('#product-list');
 new ProductList($productList, productData);
 
-const $cartList = document.querySelector('aside');
+const $cartList = document.querySelector('#shopping-cart');
 const cartList = new CartList($cartList, cartListData);
 //TODO 이벤트 컴포넌틀 분리
 document.addEventListener('click', (event) => {
@@ -23,14 +23,14 @@ document.addEventListener('click', (event) => {
     $backDrop === event.target ||
     event.target.closest('button') === $closeBtn
   ) {
-    closeCart();
+    cartList.closeCart();
     return;
   }
   if ($openCartBtn) {
-    openCart();
+    cartList.openCart();
     return;
   }
-  //cartListstate 가져와서
+
   const nextCartListState = { ...cartList.state };
 
   if (productId !== null) {
@@ -53,22 +53,8 @@ document.addEventListener('click', (event) => {
       (acc, item) => acc + item.count * item.price,
       0
     );
-    console.log(nextCartListState);
+    cartList.openCart();
     cartList.setState(nextCartListState);
-    openCart();
     return;
   }
 });
-
-function openCart() {
-  const $backDrop = document.querySelector('#backdrop');
-  $backDrop.removeAttribute('hidden');
-  const $shoppingCart = document.querySelector('#shopping-cart');
-  $shoppingCart.classList.replace('translate-x-full', 'translate-x-0');
-}
-function closeCart() {
-  const $backDrop = document.querySelector('#backdrop');
-  $backDrop.setAttribute('hidden', true);
-  const $shoppingCart = document.querySelector('#shopping-cart');
-  $shoppingCart.classList.replace('translate-x-0', 'translate-x-full');
-}
