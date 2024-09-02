@@ -1,5 +1,5 @@
 const formatPrice = (price) => {
-  return price.toLocaleString("ko-KR") + "원";
+  return price.toLocaleString('ko-KR') + '원';
 };
 
 // export const renderProductList = (products, onProductClick) => {
@@ -46,14 +46,14 @@ const formatPrice = (price) => {
 //   });
 // };
 export const renderProductList = (products, onProductClick) => {
-  const productCardGrid = document.getElementById("product-card-grid");
+  const productCardGrid = document.getElementById('product-card-grid');
 
   // 기존 내용을 비우고 새로 렌더링
-  productCardGrid.innerHTML = "";
+  productCardGrid.innerHTML = '';
 
   products.forEach((product) => {
-    const productElement = document.createElement("article");
-    productElement.id = "product-card";
+    const productElement = document.createElement('article');
+    productElement.id = 'product-card';
     productElement.innerHTML = `
       <div class="rounded-lg overflow-hidden border-2 relative">
         <img src="${product.imgSrc}" class="object-center object-cover" />
@@ -73,8 +73,8 @@ export const renderProductList = (products, onProductClick) => {
   });
 
   // 이벤트 리스너는 한 번만 등록
-  productCardGrid.addEventListener("click", (e) => {
-    const productElement = e.target.closest("[data-productid]");
+  productCardGrid.addEventListener('click', (e) => {
+    const productElement = e.target.closest('[data-productid]');
     if (productElement) {
       const productId = parseInt(productElement.dataset.productid);
       onProductClick(productId);

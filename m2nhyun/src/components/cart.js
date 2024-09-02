@@ -1,5 +1,5 @@
 const formatPrice = (price) => {
-  return price.toLocaleString("ko-KR") + "원";
+  return price.toLocaleString('ko-KR') + '원';
 };
 
 export class Cart {
@@ -9,13 +9,13 @@ export class Cart {
   }
 
   addItem(product) {
-    console.log("Adding item:", product);
+    console.log('Adding item:', product);
     const existingItem = this.items.find((item) => item.id === product.id);
     if (existingItem) {
       if (existingItem.quantity < 10) {
         existingItem.quantity++;
       } else {
-        alert("장바구니에 담을 수 있는 최대 수량은 10개입니다.");
+        alert('장바구니에 담을 수 있는 최대 수량은 10개입니다.');
         return;
       }
     } else {
@@ -30,21 +30,21 @@ export class Cart {
   }
 
   removeItem(productId) {
-    console.log("remove Item");
+    console.log('remove Item');
     this.items = this.items.filter((item) => item.id !== productId);
     this.notifyListeners();
     this.saveToLocalStorage();
   }
 
   updateQuantity(productId, delta) {
-    console.log("update Quantity");
+    console.log('update Quantity');
     const item = this.items.find((item) => item.id === productId);
     if (item) {
       const newQuantity = item.quantity + delta;
       if (newQuantity < 1) {
-        alert("장바구니에 담을 수 있는 최소 수량은 1개입니다.");
+        alert('장바구니에 담을 수 있는 최소 수량은 1개입니다.');
       } else if (newQuantity > 10) {
-        alert("장바구니에 담을 수 있는 최대 수량은 10개입니다.");
+        alert('장바구니에 담을 수 있는 최대 수량은 10개입니다.');
       } else {
         item.quantity = newQuantity;
         this.notifyListeners();
@@ -69,11 +69,11 @@ export class Cart {
   }
 
   saveToLocalStorage() {
-    localStorage.setItem("cart", JSON.stringify(this.items));
+    localStorage.setItem('cart', JSON.stringify(this.items));
   }
 
   loadFromLocalStorage() {
-    const savedCart = localStorage.getItem("cart");
+    const savedCart = localStorage.getItem('cart');
     if (savedCart) {
       this.items = JSON.parse(savedCart);
       this.notifyListeners();
@@ -149,8 +149,8 @@ export class Cart {
 // };
 
 export const renderCart = (cartItems, onRemove, onQuantityChange) => {
-  const cartList = document.getElementById("cart-list");
-  const totalCount = document.getElementById("total-count");
+  const cartList = document.getElementById('cart-list');
+  const totalCount = document.getElementById('total-count');
 
   // 기존 이벤트 핸들러 제거 (이전의 중복된 이벤트를 방지)
   const newCartList = cartList.cloneNode(true);
@@ -158,7 +158,7 @@ export const renderCart = (cartItems, onRemove, onQuantityChange) => {
 
   newCartList.innerHTML =
     cartItems.length === 0
-      ? "<p>장바구니가 비어있습니다.</p>"
+      ? '<p>장바구니가 비어있습니다.</p>'
       : `<ul class="divide-y divide-gray-200">
         ${cartItems
           .map(
@@ -190,7 +190,7 @@ export const renderCart = (cartItems, onRemove, onQuantityChange) => {
           </li>
         `
           )
-          .join("")}
+          .join('')}
           
       </ul>`;
 
@@ -199,15 +199,15 @@ export const renderCart = (cartItems, onRemove, onQuantityChange) => {
   );
 
   // 새로운 이벤트 핸들러 추가
-  newCartList.addEventListener("click", (e) => {
-    const listItem = e.target.closest("li");
+  newCartList.addEventListener('click', (e) => {
+    const listItem = e.target.closest('li');
     if (listItem) {
       const productId = parseInt(listItem.id);
-      if (e.target.classList.contains("remove-btn")) {
+      if (e.target.classList.contains('remove-btn')) {
         onRemove(productId);
-      } else if (e.target.classList.contains("decrease-btn")) {
+      } else if (e.target.classList.contains('decrease-btn')) {
         onQuantityChange(productId, -1);
-      } else if (e.target.classList.contains("increase-btn")) {
+      } else if (e.target.classList.contains('increase-btn')) {
         onQuantityChange(productId, 1);
       }
     }
